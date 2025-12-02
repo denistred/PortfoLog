@@ -14,6 +14,7 @@ class Assets(Base):
     __tablename__ = "assets"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
+    secid: Mapped[str] = mapped_column(unique=True)
     asset_type: Mapped[int] = mapped_column(ForeignKey("assets_types.id"))
     price: Mapped[float] = mapped_column(nullable=False)
     currency_id: Mapped[int] = mapped_column(ForeignKey("currencies.id"))
