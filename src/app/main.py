@@ -1,9 +1,9 @@
 from contextlib import asynccontextmanager
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from database import get_session, engine, Base
 from fastapi import FastAPI
-
+from src.app.service import AssetsService
+from src.app.database import get_session, engine, Base
 
 
 
@@ -17,4 +17,11 @@ async def lifespan(app: FastAPI):
     await engine.dispose()
 
 
-app = FastAPI(lifespan=lifespan, title="FastAPI + PostgreSQL Example")
+app = FastAPI(lifespan=lifespan)
+
+
+@app.get("/assets")
+async def get_all_assets(session: AsyncSession = Depends(get_session)):
+    service = AssetsService(session)
+    assets = await service.get_all_assets()
+    return assets
