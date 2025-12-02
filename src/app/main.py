@@ -1,15 +1,20 @@
-from typing import Union
-
+from contextlib import asynccontextmanager
+from fastapi.params import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from database import get_session, engine, Base
 from fastapi import FastAPI
 
-app = FastAPI()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    yield
+
+    await engine.dispose()
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+app = FastAPI(lifespan=lifespan, title="FastAPI + PostgreSQL Example")
