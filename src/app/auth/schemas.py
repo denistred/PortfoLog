@@ -9,8 +9,11 @@ class UserSchema(BaseModel):
 
 class TokenSchema(BaseModel):
     access_token: str
-    token_type: str
+    refresh_token: str
+    token_type: str = "bearer"
 
+class RefreshTokenSchema(BaseModel):
+    refresh_token: str
 
 class UserCreate(BaseModel):
     username: str

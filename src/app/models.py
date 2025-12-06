@@ -31,7 +31,7 @@ class User(Base):
         nullable=False,
         server_default=func.now()
     )
-
+    refresh_token: Mapped[str] = mapped_column(nullable=True)
 
 class AssetsTypes(Base):
     __tablename__ = "assets_types"
