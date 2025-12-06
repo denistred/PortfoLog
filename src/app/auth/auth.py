@@ -17,9 +17,7 @@ async def login_route(form_data: OAuth2PasswordRequestForm = Depends(), session:
     return await login_service(form_data, session)
 
 
-@router.get("/me")
-async def read_me_route(current_user: UserSchema = Depends(get_current_user)):
-    return {"username": current_user.username}
+
 
 
 @router.post("/register")

@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from src.app.database import get_session, engine, Base
 from src.app.service import AssetsService
 from src.app.auth.auth import router as auth_router
+from src.app.user.router import router as user_router
 
 
 @asynccontextmanager
@@ -19,6 +20,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)
+app.include_router(user_router)
 
 
 @app.get("/assets")
