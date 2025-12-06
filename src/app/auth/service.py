@@ -6,7 +6,7 @@ from sqlalchemy import select
 
 from src.core.security import oauth2_scheme, SECRET_KEY, ALGORITHM, create_access_token
 from src.app.auth.schemas import TokenSchema, UserCreate
-from src.app.auth.models import User
+from src.app.models import User
 from src.core.security import verify_password, hash_password
 from src.app.database import get_session
 
