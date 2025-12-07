@@ -18,14 +18,12 @@ async def login_route(form_data: OAuth2PasswordRequestForm = Depends(), session:
 
 
 
-
-
 @router.post("/register")
 async def register_route(
         user_data: UserCreate,
-        result=Depends(register_service)
+        session: AsyncSession = Depends(get_session),
 ):
-    return await register_service(user_data, result)
+    return await register_service(user_data, session)
 
 @router.post("/refresh", response_model=TokenSchema)
 async def refresh_route(
@@ -40,3 +38,9 @@ async def logout_route(
     session: AsyncSession = Depends(get_session)
 ):
     return await logout_service(current_user, session)
+
+@router.get("/me")
+async def get_me(
+    current_user: UserSchema = Depends(get_current_user),
+):
+    return current_user

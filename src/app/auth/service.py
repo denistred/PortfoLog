@@ -17,8 +17,8 @@ async def login_service(form_data, session: AsyncSession):
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(400, "Invalid credentials")
 
-    access_token = create_access_token({"sub": user.username})
-    refresh_token = create_refresh_token({"sub": user.username})
+    access_token = create_access_token({"sub": str(user.id)})
+    refresh_token = create_refresh_token({"sub": str(user.id)})
 
     user.refresh_token = refresh_token
     session.add(user)
@@ -30,20 +30,20 @@ async def login_service(form_data, session: AsyncSession):
 async def refresh_token_service(data, session: AsyncSession):
     try:
         payload = decode_token(data.refresh_token)
-        username = payload.get("sub")
-        if not username:
+        user_id = int(payload.get("sub"))
+        if not user_id:
             raise HTTPException(401, "Invalid refresh token")
     except Exception:
         raise HTTPException(401, "Invalid refresh token")
 
-    stmt = select(User).where(User.username == username)
+    stmt = select(User).where(User.id == user_id)
     result = await session.execute(stmt)
     user = result.scalar_one_or_none()
     if not user or user.refresh_token != data.refresh_token:
         raise HTTPException(401, "Refresh token expired or invalid")
 
-    access_token = create_access_token({"sub": user.username})
-    refresh_token = create_refresh_token({"sub": user.username})
+    access_token = create_access_token({"sub": str(user.id)})
+    refresh_token = create_refresh_token({"sub": str(user.id)})
 
     user.refresh_token = refresh_token
     session.add(user)
@@ -55,11 +55,11 @@ async def refresh_token_service(data, session: AsyncSession):
 async def get_current_user(token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        user_id: int = int(payload.get("sub"))
+    except JWTError as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
 
-    statement = select(User).where(User.username == username)
+    statement = select(User).where(User.id == user_id)
     user = await session.execute(statement)
     user = user.scalar_one_or_none()
 
