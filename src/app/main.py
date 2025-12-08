@@ -3,7 +3,7 @@ from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import FastAPI
 from src.app.database import get_session, engine, Base
-from src.app.service import AssetsService
+from src.app.assets.router import router as assets_router
 from src.app.auth.auth import router as auth_router
 from src.app.user.router import router as user_router
 
@@ -21,10 +21,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(user_router)
+app.include_router(assets_router)
 
 
-@app.get("/assets")
-async def get_all_assets(session: AsyncSession = Depends(get_session)):
-    service = AssetsService(session)
-    assets = await service.get_all_assets()
-    return assets
