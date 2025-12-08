@@ -83,9 +83,13 @@ class Portfolios(Base):
     __tablename__ = "portfolios"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
-    portfolio_type: Mapped[int] = mapped_column()
+    portfolio_type: Mapped[int] = mapped_column(ForeignKey("portfolio_types.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
+class PortfolioTypes(Base):
+    __tablename__ = "portfolio_types"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column()
 
 class UserAssets(Base):
     __tablename__ = "user_assets"
