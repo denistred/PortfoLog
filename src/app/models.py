@@ -68,7 +68,7 @@ class EventType(Base):
 class Events(Base):
     __tablename__ = "events"
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    portfolio_id: Mapped[int] = mapped_column(ForeignKey("portfolios.id"))
     type_id: Mapped[int] = mapped_column(ForeignKey("event_types.id"))
     asset_id: Mapped[int] = mapped_column(ForeignKey("assets.id"))
     created_at: Mapped[datetime] = mapped_column(

@@ -1,0 +1,19 @@
+from fastapi import HTTPException
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from src.app.models import Assets, UserAssets, Portfolios
+from src.app.user_assets.schemas import UserSchema
+
+class UserAssetsService:
+    @staticmethod
+    async def get_assets(portfolio_id: int, user: UserSchema, session: AsyncSession):
+        statement = select(Portfolios.id).where(Portfolios.user_id == user.id)
+        user_portfolios = await session.execute(statement)
+        user_portfolios = [row[0] for row in user_portfolios.all()]
+        if portfolio_id not in user_portfolios:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
+
+        statement = select(UserAssets).where(UserAssets.portfolio_id == portfolio_id)
+        result = await session.execute(statement)
+        user_assets = result.scalars().all()
+        return user_assets

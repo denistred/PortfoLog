@@ -5,6 +5,7 @@ from src.app.assets.router import router as assets_router
 from src.app.auth.auth import router as auth_router
 from src.app.user.router import router as user_router
 from src.app.portfolio.router import router as portfolio_router
+from src.app.user_assets.router import router as user_assets_router
 
 
 @asynccontextmanager
@@ -22,4 +23,4 @@ app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(assets_router)
 app.include_router(portfolio_router)
-
+app.include_router(user_assets_router)
