@@ -1,3 +1,5 @@
+from fastapi import Request
+
 from fastapi import Depends, HTTPException
 from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,7 +10,7 @@ from src.app.auth.schemas import UserCreate, UserSchema
 from src.app.models import User
 from src.core.security import verify_password, hash_password, decode_token, create_refresh_token
 from src.app.database import get_session
-
+from src.core.security import pwd_context
 
 async def login_service(form_data, session: AsyncSession):
     stmt = select(User).where(User.username == form_data.username)
@@ -52,7 +54,12 @@ async def refresh_token_service(data, session: AsyncSession):
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+async def get_current_user(request: Request, token: str = Depends(oauth2_scheme), session: AsyncSession = Depends(get_session)):
+    if token is None:
+        token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(401, "Missing token")
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: int = int(payload.get("sub"))
@@ -68,6 +75,20 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: AsyncSe
 
     return user
 
+
+async def authenticate_user(username: str, password: str, session: AsyncSession):
+    result = await session.execute(
+        select(User).where(User.username == username)
+    )
+    user = result.scalar_one_or_none()
+
+    if not user:
+        return None
+
+    if not pwd_context.verify(password, user.hashed_password):
+        return None
+
+    return user
 
 async def register_service(
         user_data: UserCreate,

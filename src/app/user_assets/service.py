@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.app.models import Assets, UserAssets, Portfolios
 from src.app.user_assets.schemas import UserSchema
 
+from src.app.portfolio.manager import PortfolioManager
+
 class UserAssetsService:
     @staticmethod
     async def get_assets(portfolio_id: int, user: UserSchema, session: AsyncSession):
@@ -17,3 +19,10 @@ class UserAssetsService:
         result = await session.execute(statement)
         user_assets = result.scalars().all()
         return user_assets
+
+
+    @staticmethod
+    async def add_assets(asset_id: int, quantity: int, portfolio_id: int, user_id: int, session: AsyncSession):
+        manager = PortfolioManager(user_id, session)
+        await manager.buy(asset_id, portfolio_id, quantity)
+        return 200

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import ForeignKey, DateTime, func
-from sqlalchemy.orm import Mapped, DeclarativeBase
+from sqlalchemy.orm import Mapped, DeclarativeBase, relationship
 from sqlalchemy.orm import mapped_column
 
 
@@ -17,6 +17,8 @@ class Assets(Base):
     asset_type: Mapped[int] = mapped_column(ForeignKey("assets_types.id"))
     price: Mapped[float] = mapped_column(nullable=False)
     currency_id: Mapped[int] = mapped_column(ForeignKey("currencies.id"))
+
+    user_assets = relationship("UserAssets", back_populates="asset")
 
 
 class User(Base):
@@ -103,6 +105,8 @@ class UserAssets(Base):
     portfolio_id: Mapped[int] = mapped_column(ForeignKey("portfolios.id"))
     quantity: Mapped[int] = mapped_column()
     asset_id: Mapped[int] = mapped_column(ForeignKey("assets.id"))
+
+    asset = relationship("Assets", back_populates="user_assets")
 
 
 class DividendsTime(Base):

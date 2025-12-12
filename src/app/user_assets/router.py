@@ -16,3 +16,14 @@ async def get_assets(
         session: AsyncSession = Depends(get_session)
 ):
     return await UserAssetsService.get_assets(portfolio_id, current_user, session)
+
+
+@router.post("/assets")
+async def add_assets(
+        asset_id: int,
+        quantity: int,
+        portfolio_id: int,
+        user: UserSchema = Depends(get_current_user),
+        session: AsyncSession = Depends(get_session)
+):
+    return await UserAssetsService.add_assets(asset_id, quantity, portfolio_id, user.id, session)

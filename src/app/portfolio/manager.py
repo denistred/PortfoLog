@@ -21,6 +21,10 @@ class PortfolioManager:
             raise
 
     async def buy(self, asset_id: int, portfolio_id: int, quantity: int):
+        '''Функция для добавления актива в портфолио
+            Изменяет UserAssets
+            Изменяет Events
+        '''
         statement = select(Assets).where(Assets.id == asset_id)
         result_asset = await self.session.execute(statement)
         asset = result_asset.scalar_one_or_none()
@@ -59,6 +63,10 @@ class PortfolioManager:
         return user_asset, event
 
     async def sell(self, asset_id: int, portfolio_id: int, quantity: int):
+        '''Функция для удаления актива из портфолио
+            Изменяет UserAssets
+            Изменяет Events
+        '''
         statement = select(Assets).where(Assets.id == asset_id)
         result_asset = await self.session.execute(statement)
         asset = result_asset.scalar_one()

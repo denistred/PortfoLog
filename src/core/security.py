@@ -4,7 +4,7 @@ from jose import jwt
 from datetime import datetime, timedelta
 from src.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES, REFRESH_TOKEN_EXPIRE_DAYS
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Ваш портфель</h2>
+
+<table border="1">
+<tr>
+    <th>Актив</th>
+    <th>Количество</th>
+    <th>Цена покупки</th>
+    <th>Текущая цена</th>
+</tr>
+{% for item in assets %}
+<tr>
+    <td>{{ item.asset.name }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.bought_price }}</td>
+    <td>{{ item.asset.price }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
