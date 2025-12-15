@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.functions import current_user
 
 from src.app.auth.service import get_current_user
 from src.app.database import get_session
@@ -10,6 +9,7 @@ from src.app.ui.schemas import UserSchema
 from src.app.ui.service import UserInterfaceService
 from src.app.auth.service import authenticate_user, create_access_token
 from src.app.assets.service import AssetService
+from src.app.watchlist.service import WatchlistService
 
 router = APIRouter(prefix="/ui", tags=["ui"])
 templates = Jinja2Templates(directory="src/app/templates")
@@ -57,7 +57,7 @@ async def login_submit(
 async def watchlist_page(request: Request,
                          current_user: UserSchema = Depends(get_current_user),
                          session: AsyncSession = Depends(get_session)):
-    items = await UserInterfaceService.get_watchlist_service(session, current_user)
+    items = await WatchlistService.get_watchlist_service(session, current_user)
     return templates.TemplateResponse(
         "watchlist.html",
         {"request": request, "title": "Watchlist", "username": current_user.username, "watchlists": items},

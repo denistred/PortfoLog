@@ -27,3 +27,13 @@ async def add_assets(
         session: AsyncSession = Depends(get_session)
 ):
     return await UserAssetsService.add_assets(asset_id, quantity, portfolio_id, user.id, session)
+
+@router.delete("/assets")
+async def delete_assets(
+        asset_id: int,
+        quantity: int,
+        portfolio_id: int,
+        user: UserSchema = Depends(get_current_user),
+        session: AsyncSession = Depends(get_session)
+):
+    return await UserAssetsService.remove_assets(asset_id, quantity, portfolio_id, user.id, session)
