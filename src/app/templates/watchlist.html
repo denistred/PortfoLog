@@ -1,21 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>My watchlists</h2>
+<h2>My watchlist</h2>
 
 {% if watchlists %}
-<ul>
-    {% for watchlist in watchlists %}
-    <li>
-        <strong>{{ watchlist.name }}</strong>
-        {% if watchlist.description %}
-            <div>{{ watchlist.description }}</div>
-        {% endif %}
-    </li>
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Name</th>
+        <th>SECID</th>
+        <th>Price</th>
+    </tr>
+
+    {% for item in watchlists %}
+    <tr>
+        <td>
+            <a href="/ui/assets/{{ item.secid }}">
+                {{ item.name }}
+            </a>
+        </td>
+        <td>{{ item.secid }}</td>
+        <td>{{ item.price }}</td>
+    </tr>
     {% endfor %}
-</ul>
+</table>
 {% else %}
-<p>No watchlists yet.</p>
+<p>No assets in watchlist.</p>
 {% endif %}
 
 {% endblock %}

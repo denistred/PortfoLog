@@ -60,7 +60,7 @@ async def login_submit(
 async def watchlist_page(request: Request,
                          current_user: UserSchema = Depends(get_current_user),
                          session: AsyncSession = Depends(get_session)):
-    items = await WatchlistService.get_watchlist_service(session, current_user)
+    items = await UserInterfaceService.get_watchlist_service(current_user, session)
     return templates.TemplateResponse(
         "watchlist.html",
         {"request": request, "title": "Watchlist", "username": current_user.username, "watchlists": items},

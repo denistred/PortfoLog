@@ -7,15 +7,17 @@
 <tr>
     <th>Актив</th>
     <th>Количество</th>
-    <th>Цена покупки</th>
+    <th>Средняя цена</th>
     <th>Текущая цена</th>
+    <th>Разница в цене, %</th>
 </tr>
 {% for item in assets %}
 <tr>
-    <td>{{ item.asset.name }}</td>
+    <td>{{ item.name }}</td>
     <td>{{ item.quantity }}</td>
-    <td>{{ item.bought_price }}</td>
-    <td>{{ item.asset.price }}</td>
+    <td>{{ "%.2f"|format(item.avg_price) }}</td>
+    <td>{{ item.current_price }}</td>
+    <td>{{ "%.2f"|format((item.current_price - item.avg_price) / item.avg_price * 100) }}</td>
 </tr>
 {% endfor %}
 </table>
