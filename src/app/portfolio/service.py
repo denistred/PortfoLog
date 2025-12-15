@@ -1,3 +1,5 @@
+import csv
+import io
 from fastapi import HTTPException
 from sqlalchemy import select, delete
 
@@ -47,3 +49,29 @@ class PortfolioService:
         await session.commit()
         return {"status": "ok"}
 
+    @staticmethod
+    def to_csv(items: list[dict]) -> io.StringIO:
+        output = io.StringIO()
+        writer = csv.writer(output)
+
+        writer.writerow([
+            "Asset ID",
+            "Name",
+            "SECID",
+            "Quantity",
+            "Avg Price",
+            "Current Price",
+        ])
+
+        for item in items:
+            writer.writerow([
+                item["id"],
+                item["name"],
+                item["secid"],
+                item["quantity"],
+                round(item["avg_price"], 2),
+                round(item["current_price"], 2),
+            ])
+
+        output.seek(0)
+        return output
