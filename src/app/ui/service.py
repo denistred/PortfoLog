@@ -14,4 +14,3 @@ class UserInterfaceService:
         user_assets = await UserAssetsService.get_assets(first_user_portfolios, current_user, session)
 
         return user_assets
-

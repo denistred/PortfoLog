@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Depends, Request, Form
+from fastapi import APIRouter, Depends, Request, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.functions import current_user
 
 from src.app.auth.service import get_current_user
 from src.app.database import get_session
 from src.app.events.service import EventsService
+from src.app.quotes.service import QuotesService
 from src.app.ui.schemas import UserSchema
 from src.app.ui.service import UserInterfaceService
 from src.app.auth.service import authenticate_user, create_access_token
@@ -81,4 +83,24 @@ async def events_page(request: Request,
     return templates.TemplateResponse(
         "events.html",
         {"request": request, "title": "Events", "username": current_user.username,"events": events},
+    )
+
+@router.get("/assets/{secid}", response_class=HTMLResponse)
+async def assets_page(request: Request,
+                      secid: str,
+                      session: AsyncSession = Depends(get_session)):
+    stock = await AssetService.get_assets_by_secid(secid, session)
+    prices = await QuotesService.get_prices_by_secid_service(secid)
+    print(prices)
+    if not stock:
+        raise HTTPException(status_code=404)
+    return templates.TemplateResponse(
+        "stock.html",
+        {
+            "request": request,
+            "title": "Stock info",
+            "secid": secid.upper(),
+            "username": "",
+            "assets": stock,
+            "prices": prices},
     )

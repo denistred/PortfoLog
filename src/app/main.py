@@ -9,6 +9,7 @@ from src.app.user_assets.router import router as user_assets_router
 from src.app.ui.router import router as user_router_ui
 from src.app.watchlist.router import router as watchlist_router
 from src.app.events.router import router as event_router
+from src.app.quotes.router import router as quotes_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -29,3 +30,4 @@ app.include_router(user_assets_router)
 app.include_router(user_router_ui)
 app.include_router(watchlist_router)
 app.include_router(event_router)
+app.include_router(quotes_router)

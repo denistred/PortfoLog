@@ -17,6 +17,6 @@ class AssetService:
 
     @staticmethod
     async def get_assets_by_secid(asset_secid: str, session: AsyncSession):
-        statement = select(Assets).where(Assets.secid == asset_secid)
+        statement = select(Assets).where(Assets.secid == asset_secid.upper())
         result = await session.execute(statement)
         return result.scalars().one_or_none()

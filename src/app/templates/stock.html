@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ secid }}</h2>
+
+<p><strong>SECID:</strong> {{ assets.secid }}</p>
+<p><strong>Current Price:</strong> {{ assets.price }}</p>
+
+<canvas id="priceChart" width="800" height="400"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('priceChart').getContext('2d');
+
+    const labels = {{ prices | map(attribute='time') | list | tojson }};
+    const formattedLabels = labels.map(l => new Date(l).toLocaleDateString("ru-RU"));
+
+    const closePrices = {{ prices | map(attribute='close') | list | tojson }};
+
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: formattedLabels,
+            datasets: [{
+                label: 'Close Price',
+                data: closePrices,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true
+                },
+                title: {
+                    display: true,
+                    text: '{{ secid }} Historical Prices'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Close: ${context.parsed.y}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Price'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}
