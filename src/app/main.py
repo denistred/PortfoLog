@@ -1,5 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 from src.app.database import engine, Base
 from src.app.assets.router import router as assets_router
 from src.app.auth.auth import router as auth_router
@@ -11,17 +13,26 @@ from src.app.watchlist.router import router as watchlist_router
 from src.app.events.router import router as event_router
 from src.app.quotes.router import router as quotes_router
 
+from src.parser.moex_updater import main as update_prices
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
+    scheduler.add_job(update_prices, 'interval', minutes=1)
+    scheduler.start()
+
     yield
 
     await engine.dispose()
+    scheduler.shutdown()
 
 
 app = FastAPI(lifespan=lifespan)
+scheduler = AsyncIOScheduler()
+
+
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(assets_router)

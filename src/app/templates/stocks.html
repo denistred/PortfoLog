@@ -4,13 +4,16 @@
 <h2>Available stocks</h2>
 
 {% if stocks %}
-<table border="1">
+<table border="1" id="stocksTable">
+    <thead>
     <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Secid</th>
-        <th>Price</th>
+        <th onclick="sortTable(0)">Id</th>
+        <th onclick="sortTable(1)">Name</th>
+        <th onclick="sortTable(2)">Secid</th>
+        <th onclick="sortTable(3)">Price</th>
     </tr>
+    </thead>
+    <tbody>
     {% for stock in stocks %}
     <tr>
         <td>{{ stock.id }}</td>
@@ -19,7 +22,39 @@
         <td>{{ stock.price }}</td>
     </tr>
     {% endfor %}
+    </tbody>
 </table>
+
+<script>
+let sortDirections = {};
+
+function sortTable(colIndex) {
+    const table = document.getElementById("stocksTable");
+    const tbody = table.tBodies[0];
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    sortDirections[colIndex] = !sortDirections[colIndex];
+
+    const isNumeric = !isNaN(parseFloat(rows[0].cells[colIndex].innerText));
+
+    rows.sort((a, b) => {
+        let aText = a.cells[colIndex].innerText;
+        let bText = b.cells[colIndex].innerText;
+
+        let comparison;
+        if (isNumeric) {
+            comparison = parseFloat(aText) - parseFloat(bText);
+        } else {
+            comparison = aText.localeCompare(bText);
+        }
+
+        return sortDirections[colIndex] ? comparison : -comparison;
+    });
+
+    rows.forEach(row => tbody.appendChild(row));
+}
+</script>
+
 {% else %}
 <p>No stocks available.</p>
 {% endif %}

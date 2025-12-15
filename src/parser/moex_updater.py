@@ -45,8 +45,13 @@ class MOEXPriceUpdater:
 
             await session.commit()
 
-        print("Цены обновлены")
+
+async def main():
+    print("updating prices")
+    updater = MOEXPriceUpdater()
+    await updater.update_prices()
+    print("done")
+
 
 if __name__ == "__main__":
-    updater = MOEXPriceUpdater()
-    asyncio.run(updater.update_prices())
+    asyncio.run(main())
