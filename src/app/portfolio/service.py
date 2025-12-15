@@ -45,5 +45,5 @@ class PortfolioService:
         statement = delete(Portfolios).where(Portfolios.id == portfolio_id)
         await session.execute(statement)
         await session.commit()
-        return 200
+        return {"status": "ok"}
 

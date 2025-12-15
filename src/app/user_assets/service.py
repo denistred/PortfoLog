@@ -27,10 +27,10 @@ class UserAssetsService:
     async def add_assets(asset_id: int, quantity: int, portfolio_id: int, user_id: int, session: AsyncSession):
         manager = PortfolioManager(user_id, session)
         await manager.buy(asset_id, portfolio_id, quantity)
-        return 200
+        return {"status": "ok"}
 
     @staticmethod
     async def remove_assets(asset_id: int, quantity: int, portfolio_id: int, user_id: int, session: AsyncSession):
         manager = PortfolioManager(user_id, session)
         await manager.sell(asset_id, quantity, portfolio_id)
-        return 200
+        return {"status": "ok"}

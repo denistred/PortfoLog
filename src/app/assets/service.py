@@ -35,11 +35,11 @@ class AssetService:
         statement = delete(Assets).where(Assets.id == asset_id)
         await session.execute(statement)
         await session.commit()
-        return 200
+        return {"status": "ok"}
 
     @staticmethod
     async def update_asset_service(asset_info: AssetSchema, session: AsyncSession):
         asset = Assets(**asset_info.dict())
         session.add(asset)
         await session.commit()
-        return 200
+        return {"status": "ok"}
