@@ -14,6 +14,8 @@ from src.app.events.router import router as event_router
 from src.app.quotes.router import router as quotes_router
 
 from src.parser.moex_updater import main as update_prices
+from src.core.backup import DatabaseBackupService
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,6 +23,12 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
 
     scheduler.add_job(update_prices, 'interval', minutes=1)
+    scheduler.add_job(
+        DatabaseBackupService.backup_and_upload,
+        trigger="cron",
+        hour=3,
+        minute=0,
+    )
     scheduler.start()
 
     yield

@@ -20,3 +20,5 @@ INFLUXDB_URL = os.environ.get("INFLUXDB_URL")
 INFLUXDB_TOKEN = os.environ.get("INFLUXDB_TOKEN")
 INFLUXDB_ORG = os.environ.get("INFLUXDB_ORG")
 INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET")
+
+YANDEX_DISK_TOKEN = os.environ.get("YANDEX_DISK_TOKEN")
