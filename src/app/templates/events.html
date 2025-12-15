@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Events</h2>
+
+{% if events %}
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>type_id</th>
+            <th>asset_id</th>
+            <th>Time</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.id }}</td>
+            <td>{{ event.type_id }}</td>
+            <td>{{ event.asset_id }}</td>
+            <td>{{ event.created_at }}</td>
+            <td>{{ event.value }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No events available.</p>
+{% endif %}
+
+{% endblock %}

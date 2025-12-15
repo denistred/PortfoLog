@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.auth.service import get_current_user
 from src.app.database import get_session
+from src.app.events.service import EventsService
 from src.app.ui.schemas import UserSchema
 from src.app.ui.service import UserInterfaceService
 from src.app.auth.service import authenticate_user, create_access_token
@@ -70,4 +71,14 @@ async def assets_page(request: Request,
     return templates.TemplateResponse(
         "stocks.html",
         {"request": request, "title": "Assets", "username": "","stocks": items},
+    )
+
+@router.get("/events", response_class=HTMLResponse)
+async def events_page(request: Request,
+                      current_user: UserSchema = Depends(get_current_user),
+                      session: AsyncSession = Depends(get_session)):
+    events = await EventsService.get_events_service(1, current_user, session)
+    return templates.TemplateResponse(
+        "events.html",
+        {"request": request, "title": "Events", "username": current_user.username,"events": events},
     )
