@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, delete
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.app.portfolio.schemas import UserSchema, CreatePortfolioSchema
@@ -29,3 +29,21 @@ class PortfolioService:
         session.add(portfolio)
         await session.commit()
         return portfolio
+
+    @staticmethod
+    async def delete_portfolio_service(portfolio_id: int, current_user: UserSchema, session: AsyncSession):
+        statement = select(Portfolios).where(Portfolios.user_id == current_user.id)
+        result = await session.execute(statement)
+        portfolios = result.scalars().all()
+
+        if not portfolios:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
+
+        if portfolio_id not in [x.id for x in portfolios]:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
+
+        statement = delete(Portfolios).where(Portfolios.id == portfolio_id)
+        await session.execute(statement)
+        await session.commit()
+        return 200
+

@@ -1,6 +1,4 @@
-from fastapi import Request
-
-from fastapi import Depends, HTTPException
+from fastapi import Request, status, Depends, HTTPException
 from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
@@ -120,3 +118,15 @@ async def logout_service(current_user: UserSchema = Depends(get_current_user),
     await session.execute(statement)
     await session.commit()
     return {"message": "User logged out"}
+
+
+
+def require_role(required_role: int):
+    def checker(current_user=Depends(get_current_user)):
+        if current_user.role_id != required_role:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not enough permissions"
+            )
+        return current_user
+    return checker

@@ -7,3 +7,11 @@ class AssetSchema(BaseModel):
         asset_type: int
         price: float
         currency_id: int
+
+
+class AssetUpdateSchema(BaseModel):
+    name: str
+    secid: str
+    asset_type: int
+    price: float
+    currency_id: int

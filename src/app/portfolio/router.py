@@ -22,3 +22,7 @@ async def create_portfolio(
         session: AsyncSession = Depends(get_session)
 ):
     return await PortfolioService.create_portfolio(portfolio, current_user, session)
+
+@router.delete("/portfolio/{portfolio_id}")
+async def delete_portfolio(portfolio_id: int, current_user: UserSchema = Depends(get_current_user), session: AsyncSession = Depends(get_session)):
+    return await PortfolioService.delete_portfolio_service(portfolio_id, current_user, session)
