@@ -35,6 +35,7 @@ class User(Base):
     )
     refresh_token: Mapped[str] = mapped_column(nullable=True)
 
+
 class AssetsTypes(Base):
     __tablename__ = "assets_types"
     id: Mapped[int] = mapped_column(primary_key=True)

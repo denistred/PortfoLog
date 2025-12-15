@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Available stocks</h2>
+
+{% if stocks %}
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Secid</th>
+        <th>Price</th>
+    </tr>
+    {% for stock in stocks %}
+    <tr>
+        <td>{{ stock.id }}</td>
+        <td>{{ stock.name }}</td>
+        <td>{{ stock.secid }}</td>
+        <td>{{ stock.price }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No stocks available.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>My watchlists</h2>
+
+{% if watchlists %}
+<ul>
+    {% for watchlist in watchlists %}
+    <li>
+        <strong>{{ watchlist.name }}</strong>
+        {% if watchlist.description %}
+            <div>{{ watchlist.description }}</div>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No watchlists yet.</p>
+{% endif %}
+
+{% endblock %}
