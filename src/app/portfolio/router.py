@@ -40,3 +40,16 @@ async def export_portfolio_csv(
     return StreamingResponse(csv_file,
                              media_type="text/csv",
                              headers={"Content-Disposition": "attachment; filename=portfolio.csv"})
+
+@router.get("/portfolio/export/pdf")
+async def export_portfolio_pdf(
+        current_user: UserSchema = Depends(get_current_user),
+        session: AsyncSession = Depends(get_session)
+):
+    items = await UserInterfaceService.get_portfolio_service(session, current_user)
+    pdf_file = PortfolioService.to_pdf(items)
+    return StreamingResponse(
+        pdf_file,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=portfolio.pdf"}
+    )

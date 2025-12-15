@@ -2,6 +2,12 @@ import csv
 import io
 from fastapi import HTTPException
 from sqlalchemy import select, delete
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib import colors
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.styles import getSampleStyleSheet
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.app.portfolio.schemas import UserSchema, CreatePortfolioSchema
@@ -50,28 +56,47 @@ class PortfolioService:
         return {"status": "ok"}
 
     @staticmethod
-    def to_csv(items: list[dict]) -> io.StringIO:
-        output = io.StringIO()
-        writer = csv.writer(output)
+    def to_pdf(items: list[dict]) -> io.BytesIO:
+        buffer = io.BytesIO()
 
-        writer.writerow([
-            "Asset ID",
-            "Name",
-            "SECID",
-            "Quantity",
-            "Avg Price",
-            "Current Price",
-        ])
+        pdfmetrics.registerFont(
+            TTFont("DejaVu", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+        )
+
+        doc = SimpleDocTemplate(buffer, pagesize=letter)
+        elements = []
+
+        styles = getSampleStyleSheet()
+        styles["Title"].fontName = "DejaVu"
+        styles["Normal"].fontName = "DejaVu"
+
+        elements.append(Paragraph("Отчёт по портфелю", styles["Title"]))
+
+        data = [
+            ["Asset ID", "Название", "SECID", "Количество", "Средняя цена", "Текущая цена"]
+        ]
 
         for item in items:
-            writer.writerow([
+            data.append([
                 item["id"],
                 item["name"],
                 item["secid"],
                 item["quantity"],
                 round(item["avg_price"], 2),
-                round(item["current_price"], 2),
+                round(item["current_price"], 2)
             ])
 
-        output.seek(0)
-        return output
+        table = Table(data, hAlign="LEFT")
+        table.setStyle(TableStyle([
+            ("FONTNAME", (0, 0), (-1, -1), "DejaVu"),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+        ]))
+
+        elements.append(table)
+        doc.build(elements)
+
+        buffer.seek(0)
+        return buffer
