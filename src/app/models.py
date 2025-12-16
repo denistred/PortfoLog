@@ -110,14 +110,6 @@ class UserAssets(Base):
     asset = relationship("Assets", back_populates="user_assets")
 
 
-class DividendsTime(Base):
-    __tablename__ = "dividends_time"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    asset_id: Mapped[int] = mapped_column(ForeignKey("assets.id"))
-    value: Mapped[float] = mapped_column()
-    paytime: Mapped[datetime] = mapped_column()
-
-
 class Quotes(Base):
     __tablename__ = "quotes"
     id: Mapped[int] = mapped_column(primary_key=True)

@@ -17,7 +17,7 @@
     {% for stock in stocks %}
     <tr>
         <td>{{ stock.id }}</td>
-        <td><a href="/ui/assets/{{ stock.secid }}">{{ stock.name }}</a></td>
+        <td><a href="/ui/assets/{{ stock.secid }}" class="asset-link">{{ stock.name }}</a></td>
         <td>{{ stock.secid }}</td>
         <td>{{ stock.price }}</td>
     </tr>

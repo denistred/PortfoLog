@@ -1,26 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>{{ title }}</title>
+
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+
+    <link rel="stylesheet" href="/static/css/main.css">
 </head>
 <body>
     <nav>
-        <a href="/ui/portfolio">Portfolio</a> |
-        <a href="/ui/watchlist">Watchlist</a> |
-        <a href="/ui/assets">Assets</a> |
+        <a href="/ui/portfolio">Portfolio</a>
+        <a href="/ui/watchlist">Watchlist</a>
+        <a href="/ui/assets">Assets</a>
         <a href="/ui/events">Events</a>
     </nav>
 
     <hr>
 
+    <div class="container">
+        <h1>{{ title }}</h1>
+        <div class="subtitle">Logged in as {{ username }}</div>
 
-    <h1>{{ username }}</h1>
-    <h1>{{ title }}</h1>
-    <div>
-        {% block content %}
-        {% endblock %}
+        <div class="card">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
 </body>
 </html>

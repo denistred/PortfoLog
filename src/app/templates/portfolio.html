@@ -13,7 +13,7 @@
 </tr>
 {% for item in assets %}
 <tr>
-    <td>{{ item.name }}</td>
+    <td><a href="/ui/assets/{{ item.secid }}" class="asset-link">{{ item.name }}</a></td>
     <td>{{ item.quantity }}</td>
     <td>{{ "%.2f"|format(item.avg_price) }}</td>
     <td>{{ item.current_price }}</td>

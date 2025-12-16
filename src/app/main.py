@@ -1,5 +1,8 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from src.app.database import engine, Base
@@ -40,6 +43,13 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 scheduler = AsyncIOScheduler()
 
+BASE_DIR = Path(__file__).resolve().parent
+
+app.mount(
+    "/static",
+    StaticFiles(directory=BASE_DIR / "static"),
+    name="static",
+)
 
 app.include_router(auth_router)
 app.include_router(user_router)
